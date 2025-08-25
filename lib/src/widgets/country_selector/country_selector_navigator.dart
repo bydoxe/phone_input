@@ -55,6 +55,8 @@ abstract class CountrySelectorNavigator {
     required ValueChanged<Country> onCountrySelected,
     required bool isBottomSheet,
     ScrollController? scrollController,
+    String? title,
+    TextStyle? titleStyle,
   }) {
     return CountrySelector(
       countries: countries,
@@ -79,6 +81,8 @@ abstract class CountrySelectorNavigator {
       bottomSheetDragHandlerColor: bottomSheetDragHandlerColor,
       searchInputHeight: searchInputHeight,
       searchInputWidth: searchInputWidth,
+      title: title,
+      titleStyle: titleStyle,
     );
   }
 
@@ -144,6 +148,8 @@ abstract class CountrySelectorNavigator {
 
   const factory CountrySelectorNavigator.modalBottomSheet({
     double? height,
+    String? title,
+    TextStyle? titleStyle,
     List<IsoCode>? countries,
     List<IsoCode>? favorites,
     bool addFavoriteSeparator,
@@ -257,7 +263,8 @@ class DialogNavigator extends CountrySelectorNavigator {
           height: height,
           child: _getCountrySelector(
             isBottomSheet: false,
-            onCountrySelected: (country) => Navigator.of(context, rootNavigator: true).pop(country),
+            onCountrySelected: (country) =>
+                Navigator.of(context, rootNavigator: true).pop(country),
           ),
         ),
       ),
@@ -359,9 +366,13 @@ class BottomSheetNavigator extends CountrySelectorNavigator {
 
 class ModalBottomSheetNavigator extends CountrySelectorNavigator {
   final double? height;
+  final String? title;
+  final TextStyle? titleStyle;
 
   const ModalBottomSheetNavigator._({
     this.height,
+    this.title,
+    this.titleStyle,
     super.showSearchInput = true,
     super.bottomSheetDragHandlerColor,
     super.countries,
@@ -392,6 +403,8 @@ class ModalBottomSheetNavigator extends CountrySelectorNavigator {
         height: height ?? MediaQuery.of(context).size.height - 90,
         child: _getCountrySelector(
           isBottomSheet: true,
+          title: title,
+          titleStyle: titleStyle,
           onCountrySelected: (country) => Navigator.pop(context, country),
         ),
       ),
