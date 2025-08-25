@@ -30,7 +30,6 @@ class SearchInput extends StatelessWidget {
     return TextField(
       onChanged: onChanged,
       onSubmitted: (_) => onSubmitted(),
-      cursorColor: style?.color,
       style: style,
       decoration: decoration ??
           InputDecoration(
