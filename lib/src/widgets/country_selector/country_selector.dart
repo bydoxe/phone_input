@@ -89,6 +89,9 @@ class CountrySelector extends StatefulWidget {
   /// Optional style for the title
   final TextStyle? titleStyle;
 
+  /// When true, tapping outside the search input will unfocus it (modal sheet)
+  final bool unfocusOnTapOutside;
+
   const CountrySelector({
     required this.onCountrySelected,
     required this.isBottomSheet,
@@ -114,6 +117,7 @@ class CountrySelector extends StatefulWidget {
     this.searchInputWidth,
     this.title,
     this.titleStyle,
+    this.unfocusOnTapOutside = false,
     super.key,
   });
 
@@ -156,7 +160,7 @@ class CountrySelectorState extends State<CountrySelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final content = Column(
       children: [
         widget.isBottomSheet
             ? const SizedBox(height: 16)
@@ -224,6 +228,16 @@ class CountrySelectorState extends State<CountrySelector> {
         ),
         const SizedBox(height: 8),
       ],
+    );
+
+    if (!widget.unfocusOnTapOutside) {
+      return content;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: content,
     );
   }
 }

@@ -57,6 +57,7 @@ abstract class CountrySelectorNavigator {
     ScrollController? scrollController,
     String? title,
     TextStyle? titleStyle,
+    bool unfocusOnTapOutside = false,
   }) {
     return CountrySelector(
       countries: countries,
@@ -83,6 +84,7 @@ abstract class CountrySelectorNavigator {
       searchInputWidth: searchInputWidth,
       title: title,
       titleStyle: titleStyle,
+      unfocusOnTapOutside: unfocusOnTapOutside,
     );
   }
 
@@ -405,6 +407,7 @@ class ModalBottomSheetNavigator extends CountrySelectorNavigator {
           isBottomSheet: true,
           title: title,
           titleStyle: titleStyle,
+          unfocusOnTapOutside: true,
           onCountrySelected: (country) => Navigator.pop(context, country),
         ),
       ),
