@@ -258,7 +258,7 @@ class PhoneFieldState extends State<PhoneField> {
                 final dividerColor = widget.dividerColor ?? Colors.grey;
                 final divider = widget.isDivider
                     ? Container(
-                        height: 20,
+                        height: 16,
                         width: 1,
                         color: dividerColor,
                         margin: const EdgeInsets.symmetric(horizontal: 8),
