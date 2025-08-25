@@ -19,6 +19,9 @@ class PhoneField extends StatefulWidget {
   final InputDecoration decoration;
   final bool isCountrySelectionEnabled;
   final bool showArrow;
+  final bool isDivider;
+  final Color? dividerColor;
+
   /// configures the way the country picker selector is shown
   final CountrySelectorNavigator selectorNavigator;
 
@@ -74,6 +77,8 @@ class PhoneField extends StatefulWidget {
     required this.errorText,
     required this.decoration,
     required this.isCountrySelectionEnabled,
+    required this.isDivider,
+    required this.dividerColor,
     // textfield  inputs
     required this.keyboardType,
     required this.textInputAction,
@@ -149,7 +154,8 @@ class PhoneFieldState extends State<PhoneField> {
       isListVisible = true;
     });
 
-    final selected = await widget.selectorNavigator.requestCountrySelector(context);
+    final selected =
+        await widget.selectorNavigator.requestCountrySelector(context);
     if (selected != null) {
       controller.isoCode = selected.isoCode;
     }
@@ -170,7 +176,9 @@ class PhoneFieldState extends State<PhoneField> {
     // field which doesn't span the whole input
     // When the country chip is shown, clicking on it request country selection
     final maxTextFieldLength =
-        MetadataFinder.getMetadataLengthForIsoCode(controller.isoCode).mobile.last;
+        MetadataFinder.getMetadataLengthForIsoCode(controller.isoCode)
+            .mobile
+            .last;
     final item = MouseRegion(
       cursor: SystemMouseCursors.text,
       child: InputDecorator(
@@ -184,8 +192,8 @@ class PhoneFieldState extends State<PhoneField> {
           inputFormatters: widget.inputFormatters ??
               [
                 PhoneLengthLimitingTextInputFormatter(maxTextFieldLength),
-                FilteringTextInputFormatter.allow(
-                    RegExp('[${Patterns.plus}${Patterns.digits}${Patterns.punctuation}]')),
+                FilteringTextInputFormatter.allow(RegExp(
+                    '[${Patterns.plus}${Patterns.digits}${Patterns.punctuation}]')),
               ],
           autofillHints: widget.autofillHints,
           keyboardType: widget.keyboardType,
@@ -232,7 +240,7 @@ class PhoneFieldState extends State<PhoneField> {
     return item;
   }
 
-  Widget _getCountryCodeChip() {
+  Widget _getCountryCodeChip({required bool isPrefix}) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: MouseRegion(
@@ -246,22 +254,43 @@ class PhoneFieldState extends State<PhoneField> {
               padding: !widget.showFlagInInput
                   ? const EdgeInsets.only(right: 4)
                   : const EdgeInsetsDirectional.fromSTEB(8, 0, 4, 0),
-              child: CountryCodeChip(
-                key: const ValueKey('country-code-chip'),
-                isoCode: controller.isoCode,
-                showFlag: widget.showFlagInInput,
-                countryCodeTextStyle: widget.countryCodeStyle ??
-                    widget.decoration.labelStyle ??
-                    TextStyle(
-                      height: 1.2,
-                      fontSize: 16,
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                    ),
-                flagSize: widget.flagSize,
-                flagShape: widget.flagShape,
-                showArrow: widget.showArrow,
-                isListVisible: isListVisible,
-              ),
+              child: Builder(builder: (context) {
+                final dividerColor = widget.dividerColor ?? Colors.grey;
+                final divider = widget.isDivider
+                    ? Container(
+                        height: 20,
+                        width: 1,
+                        color: dividerColor,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                      )
+                    : const SizedBox.shrink();
+
+                final chip = CountryCodeChip(
+                  key: const ValueKey('country-code-chip'),
+                  isoCode: controller.isoCode,
+                  showFlag: widget.showFlagInInput,
+                  countryCodeTextStyle: widget.countryCodeStyle ??
+                      widget.decoration.labelStyle ??
+                      TextStyle(
+                        height: 1.2,
+                        fontSize: 16,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                  flagSize: widget.flagSize,
+                  flagShape: widget.flagShape,
+                  showArrow: widget.showArrow,
+                  isListVisible: isListVisible,
+                );
+
+                // If used as prefix (LTR case), place divider after chip to face the input.
+                // If used as suffix (RTL case), place divider before chip to face the input.
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: isPrefix
+                      ? <Widget>[chip, divider]
+                      : <Widget>[divider, chip],
+                );
+              }),
             ),
           ),
         ),
@@ -288,8 +317,12 @@ class PhoneFieldState extends State<PhoneField> {
     return widget.decoration.copyWith(
       hintText: null,
       errorText: widget.errorText,
-      prefix: directionality == TextDirection.ltr ? _getCountryCodeChip() : null,
-      suffix: directionality == TextDirection.rtl ? _getCountryCodeChip() : null,
+      prefix: directionality == TextDirection.ltr
+          ? _getCountryCodeChip(isPrefix: true)
+          : null,
+      suffix: directionality == TextDirection.rtl
+          ? _getCountryCodeChip(isPrefix: false)
+          : null,
     );
   }
 }

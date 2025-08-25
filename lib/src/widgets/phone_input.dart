@@ -75,17 +75,26 @@ class PhoneInput extends FormField<PhoneNumber> {
   /// the focusNode of the national number
   final FocusNode? focusNode;
 
-    PhoneInput({
+  /// whether to show a vertical divider between country chip and input
+  final bool isDivider;
+
+  /// color of the divider if [isDivider] is true
+  final Color? dividerColor;
+
+  PhoneInput({
     Key? key,
     this.controller,
     this.shouldFormat = true,
     this.onChanged,
     this.focusNode,
+    this.isDivider = false,
+    this.dividerColor,
     bool showFlagInInput = true,
     required CountrySelectorNavigator countrySelectorNavigator,
     Function(PhoneNumber?)? onSaved,
     this.defaultCountry = IsoCode.US,
-    InputDecoration decoration = const InputDecoration(border: UnderlineInputBorder()),
+    InputDecoration decoration =
+        const InputDecoration(border: UnderlineInputBorder()),
     AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
     PhoneNumber? initialValue,
     double flagSize = 20,
@@ -150,6 +159,8 @@ class PhoneInput extends FormField<PhoneNumber> {
               controller: field._childController,
               showFlagInInput: showFlagInInput,
               selectorNavigator: countrySelectorNavigator,
+              isDivider: field.widget.isDivider,
+              dividerColor: field.widget.dividerColor,
               errorText: field.getErrorText(),
               flagShape: flagShape,
               flagSize: flagSize,
