@@ -112,48 +112,19 @@ class CountryList extends StatelessWidget {
                     shape: flagShape,
                   )
                 : null,
-            title: showCountryName || showDialCode
-                ? Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: showDialCode && showCountryFlag && showCountryName
-                        ? Text(
-                            country.name,
-                            textAlign: TextAlign.start,
-                            style: countryNameStyle,
-                          )
-                        : Row(
-                            children: [
-                              showCountryName
-                                  ? Expanded(
-                                      child: Text(
-                                        country.name,
-                                        textAlign: TextAlign.start,
-                                        style: countryNameStyle,
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                              const SizedBox(width: 4),
-                              showDialCode
-                                  ? Text(
-                                      country.displayCountryCode,
-                                      textDirection: TextDirection.ltr,
-                                      textAlign: TextAlign.start,
-                                      style: countryCodeStyle,
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
-                          ),
+            title: showCountryName
+                ? Text(
+                    country.name,
+                    textAlign: TextAlign.start,
+                    style: countryNameStyle,
                   )
                 : null,
-            subtitle: showDialCode && showCountryFlag && showCountryName
-                ? Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      country.displayCountryCode,
-                      textDirection: TextDirection.ltr,
-                      textAlign: TextAlign.start,
-                      style: countryCodeStyle,
-                    ),
+            trailing: showDialCode
+                ? Text(
+                    country.displayCountryCode,
+                    textDirection: TextDirection.ltr,
+                    textAlign: TextAlign.end,
+                    style: countryCodeStyle,
                   )
                 : null,
             onTap: () => onTap(country),
